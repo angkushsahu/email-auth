@@ -1,0 +1,1 @@
+# E-mail only authentication
