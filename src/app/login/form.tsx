@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
 import { loginSchema, type LoginType } from "@/validations";
+import { loginAction } from "@/actions/auth";
 
 export function LoginForm() {
    const loginForm = useForm<LoginType>({
@@ -12,8 +13,15 @@ export function LoginForm() {
       defaultValues: { email: "" },
    });
 
-   function onLogin(values: LoginType) {
-      console.log(values);
+   async function onLogin(values: LoginType) {
+      const user = {
+         name: "Angkush Sahu",
+         email: "angkushsahu2502@gmail.com",
+         joinedOn: "23rd September, 2024",
+         id: "6234kj324ksdf9234",
+      };
+      const sendMailAction = loginAction.bind(null, user);
+      await sendMailAction();
    }
 
    return (

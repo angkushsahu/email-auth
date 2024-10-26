@@ -1,8 +1,13 @@
+import { cookies } from "next/headers";
 import Link from "next/link";
-import { loginUrl, profileClientUrl, profileServerUrl, protectedUrl, publicUrl, registerUrl } from "@/lib";
 
-export default function Homepage() {
-   const isAuth = true;
+import { loginUrl, profileClientUrl, profileServerUrl, protectedUrl, publicUrl, registerUrl } from "@/lib";
+import { decrypt } from "@/lib/session";
+
+export default async function Homepage() {
+   const token = cookies().get("session")?.value;
+   const { success } = await decrypt(token);
+   const isAuth = success;
 
    return (
       <section className="flex grow flex-col items-center justify-center text-center">
