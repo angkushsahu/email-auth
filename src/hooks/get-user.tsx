@@ -1,27 +1,33 @@
+"use client";
+
 import { useEffect, useState } from "react";
 
+import type { Response, User } from "@/types";
+
 export function useGetUser() {
-   const [status, setStatus] = useState<"loading" | "error" | "success" | "idle">("idle");
+   const [status, setStatus] = useState<"loading" | "error" | "success">("loading");
    const [error, setError] = useState<Error | null>(null);
-   const [data, setData] = useState<unknown | null>(null);
+   const [data, setData] = useState<User | null>(null);
 
    useEffect(() => {
       async function getUser() {
          try {
-            setStatus("loading");
+            if (status !== "loading") setStatus("loading");
 
             const response = await fetch("/api/user");
-            const data = await response.json();
-            setData(data);
+            const data: Response = await response.json();
 
-            setStatus("success");
+            if (data?.success) {
+               setStatus("success");
+               setData(data.user);
+            } else setStatus("error");
          } catch (error: unknown) {
             setError(error as Error);
             setStatus("error");
          }
       }
 
-      getUser();
+      getUser().then();
    }, []);
 
    return { data, error, status };

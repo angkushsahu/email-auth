@@ -1,10 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { cookies } from "next/headers";
 
-import { loginUrl, profileClientUrl, profileServerUrl, protectedUrl, registerUrl } from "./lib";
-import { decrypt } from "./lib/session";
+import { loginUrl, profileClientUrl, profileServerUrl, profileUpdateUrl, protectedUrl, registerUrl } from "./lib";
+import { decryptFromCookie } from "./lib/session";
 
-const protectedRoutes = [protectedUrl, profileClientUrl, profileServerUrl];
+const protectedRoutes = [protectedUrl, profileClientUrl, profileServerUrl, profileUpdateUrl];
 const publicRoutes = [registerUrl, loginUrl];
 
 export default async function middleware(req: NextRequest) {
@@ -12,11 +11,10 @@ export default async function middleware(req: NextRequest) {
    const isProtectedRoute = protectedRoutes.includes(path);
    const isPublicRoute = publicRoutes.includes(path);
 
-   const cookie = cookies().get("session")?.value;
-   const session = await decrypt(cookie);
+   const { user } = await decryptFromCookie();
 
-   if (isProtectedRoute && !session?.payload?.email) return NextResponse.redirect(new URL(loginUrl, req.nextUrl));
-   else if (isPublicRoute && session.payload?.email) return NextResponse.redirect(new URL(profileClientUrl, req.nextUrl));
+   if (isProtectedRoute && !user) return NextResponse.redirect(new URL(loginUrl, req.nextUrl));
+   else if (isPublicRoute && user) return NextResponse.redirect(new URL(profileClientUrl, req.nextUrl));
 
    return NextResponse.next();
 }

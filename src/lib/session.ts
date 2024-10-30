@@ -1,8 +1,9 @@
 import "server-only";
 
 import { jwtVerify, SignJWT } from "jose";
+import { cookies } from "next/headers";
 
-import type { DecryptReturns, JWTContents, SessionPayload } from "@/types";
+import type { DecryptFromCookieReturns, DecryptReturns, JWTContents, SessionPayload } from "@/types";
 
 const getSecret = () => new TextEncoder().encode(process.env.JWT_SECRET);
 
@@ -23,5 +24,24 @@ export async function decrypt(session: string | undefined = ""): Promise<Decrypt
       return { payload, success: true };
    } catch {
       return { payload: null, success: false };
+   }
+}
+
+export async function decryptFromCookie(): Promise<DecryptFromCookieReturns> {
+   try {
+      const token = cookies().get("session")?.value;
+      const { payload, success } = await decrypt(token);
+      if (!success) return { user: null, success: false };
+
+      const user = {
+         _id: payload._id,
+         name: payload.name,
+         email: payload.email,
+         createdAt: payload.createdAt,
+      };
+
+      return { user, success: true };
+   } catch {
+      return { user: null, success: false };
    }
 }

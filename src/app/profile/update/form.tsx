@@ -1,27 +1,29 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
-import { loginSchema, type LoginType } from "@/validations";
+import { registerSchema, type RegisterType } from "@/validations";
 import { loginAction } from "@/actions/auth";
-import { profileServerUrl } from "@/lib";
 import type { Response } from "@/types";
 import { toast } from "@/hooks";
 
-export function LoginForm() {
-   const router = useRouter();
+type UpdateFormProps = RegisterType & { _id: string };
 
-   const loginForm = useForm<LoginType>({
-      resolver: zodResolver(loginSchema),
-      defaultValues: { email: "" },
+export function UpdateForm(props: UpdateFormProps) {
+   const updateForm = useForm<RegisterType>({
+      resolver: zodResolver(registerSchema),
+      defaultValues: { email: props.email, name: props.name },
    });
 
-   async function onLogin(values: LoginType) {
+   async function onUpdate(values: RegisterType) {
       try {
-         const response = await fetch(`/api/user/${values.email}`);
+         const response = await fetch(`/api/user/${props.email}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values),
+         });
          const data: Response = await response.json();
 
          if (!data.success) return toast({ title: data.message, variant: "destructive" });
@@ -29,8 +31,6 @@ export function LoginForm() {
          toast({ title: data.message });
          const sendMailAction = loginAction.bind(null, data.user);
          await sendMailAction();
-
-         router.replace(profileServerUrl);
       } catch (error: unknown) {
          let message = "Some error occurred";
          if (error instanceof Error) message = error.message;
@@ -39,10 +39,23 @@ export function LoginForm() {
    }
 
    return (
-      <Form {...loginForm}>
-         <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
+      <Form {...updateForm}>
+         <form onSubmit={updateForm.handleSubmit(onUpdate)} className="space-y-4">
             <FormField
-               control={loginForm.control}
+               control={updateForm.control}
+               name="name"
+               render={({ field }) => (
+                  <FormItem>
+                     <FormLabel>Name</FormLabel>
+                     <FormControl>
+                        <Input placeholder="e.g. John Doe" {...field} />
+                     </FormControl>
+                     <FormMessage />
+                  </FormItem>
+               )}
+            />
+            <FormField
+               control={updateForm.control}
                name="email"
                render={({ field }) => (
                   <FormItem>
@@ -55,7 +68,7 @@ export function LoginForm() {
                )}
             />
             <div className="flex items-center justify-end pt-2">
-               <Button type="submit">Login Now</Button>
+               <Button type="submit">Update Now</Button>
             </div>
          </form>
       </Form>
