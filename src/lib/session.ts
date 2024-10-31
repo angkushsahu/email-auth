@@ -5,11 +5,14 @@ import { cookies } from "next/headers";
 
 import type { DecryptFromCookieReturns, DecryptReturns, JWTContents, SessionPayload } from "@/types";
 
-const getSecret = () => new TextEncoder().encode(process.env.JWT_SECRET);
+function getSecret() {
+   if (!process.env.JWT_SECRET) throw new Error("Please specify environment variable 'JWT_SECRET'");
+   return new TextEncoder().encode(process.env.JWT_SECRET);
+}
 
-export async function encrypt({ expiresAt, user }: SessionPayload) {
+export async function encrypt({ expiresAt, payload }: SessionPayload) {
    return (
-      new SignJWT(user)
+      new SignJWT(payload)
          .setProtectedHeader({ alg: "HS256" })
          .setExpirationTime(expiresAt)
          .setIssuedAt()
@@ -19,6 +22,7 @@ export async function encrypt({ expiresAt, user }: SessionPayload) {
 }
 
 export async function decrypt(session: string | undefined = ""): Promise<DecryptReturns> {
+   if (!session) return { payload: null, success: false };
    try {
       const { payload }: { payload: JWTContents | null } = await jwtVerify(session, getSecret(), { algorithms: ["HS256"] });
       return { payload, success: true };
@@ -27,10 +31,13 @@ export async function decrypt(session: string | undefined = ""): Promise<Decrypt
    }
 }
 
-export async function decryptFromCookie(): Promise<DecryptFromCookieReturns> {
+export async function decryptFromCookie(
+   cookieName: "session" | "verification",
+   token: string | null = null
+): Promise<DecryptFromCookieReturns> {
    try {
-      const token = cookies().get("session")?.value;
-      const { payload, success } = await decrypt(token);
+      const session = token ?? cookies().get(cookieName)?.value;
+      const { payload, success } = await decrypt(session);
       if (!success) return { user: null, success: false };
 
       const user = {

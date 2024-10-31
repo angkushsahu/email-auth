@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { connectDatabase, userModel } from "@/db";
 import { decryptFromCookie } from "@/lib/session";
+import { connectDatabase, userModel } from "@/db";
 
 // Get user through encrypted cookie
 export async function GET() {
    try {
-      const { success, user } = await decryptFromCookie();
-      return NextResponse.json({ success, user, message: "User found successfully" }, { status: 200 });
+      const { user } = await decryptFromCookie("session");
+      if (!user) return NextResponse.json({ success: false, user: null, message: "User not found" }, { status: 404 });
+      return NextResponse.json({ success: true, user, message: "User found successfully" }, { status: 200 });
    } catch (error: unknown) {
       let message = "Internal Server Error";
       if (error instanceof Error) message = error.message;
@@ -19,7 +20,7 @@ export async function GET() {
 export async function POST(request: Request) {
    try {
       const body = await request.json();
-      if (!body.email || !body.name)
+      if (!body.email || !body.name || typeof body.email !== "string" || typeof body.name !== "string")
          return NextResponse.json({ success: false, user: null, message: "Please provide user name and email" }, { status: 400 });
 
       await connectDatabase();

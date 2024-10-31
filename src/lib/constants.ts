@@ -1,5 +1,7 @@
 export const homeUrl = "/";
 
+export const checkMailUrl = "/auth/check-mail";
+export const verifyMailUrl = "/auth/verify";
 export const registerUrl = "/register";
 export const loginUrl = "/login";
 

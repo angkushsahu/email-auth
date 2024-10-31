@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
 import { registerSchema, type RegisterType } from "@/validations";
-import { loginAction } from "@/actions/auth";
 import type { Response } from "@/types";
 import { toast } from "@/hooks";
 
@@ -29,8 +28,6 @@ export function UpdateForm(props: UpdateFormProps) {
          if (!data.success) return toast({ title: data.message, variant: "destructive" });
 
          toast({ title: data.message });
-         const sendMailAction = loginAction.bind(null, data.user);
-         await sendMailAction();
       } catch (error: unknown) {
          let message = "Some error occurred";
          if (error instanceof Error) message = error.message;

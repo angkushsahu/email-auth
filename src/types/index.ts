@@ -3,6 +3,15 @@ import type { JWTPayload } from "jose";
 
 export type Children<T = void> = Readonly<PropsWithChildren<T>>;
 
+export type PageProps = {
+   params: { slug: string };
+   searchParams: Record<string, string | Array<string> | undefined>;
+};
+
+export type GetUserByIdContextType = {
+   params: { email: string };
+};
+
 export type User = {
    name: string;
    email: string;
@@ -11,7 +20,7 @@ export type User = {
 };
 
 export type SessionPayload = {
-   user: User;
+   payload: Readonly<Record<string, unknown>>;
    expiresAt: Date;
 };
 

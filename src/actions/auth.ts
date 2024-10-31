@@ -1,14 +1,14 @@
 "use server";
 
+import { setLoginCookieExpiry } from "@/lib/set-cookie-expire";
 import { cookies } from "next/headers";
 
-import { encrypt } from "@/lib/session";
-import type { User } from "@/types";
+export async function loginAction(token: string) {
+   const expiryDate = setLoginCookieExpiry();
+   const webCookies = cookies();
 
-export async function loginAction(user: User) {
-   const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-   const token = await encrypt({ user, expiresAt: expiryDate });
-   cookies().set("session", token, { maxAge: expiryDate.getTime() });
+   webCookies.set("session", token, { expires: expiryDate });
+   if (webCookies.has("verification")) webCookies.delete("verification");
 }
 
 export async function logoutAction() {

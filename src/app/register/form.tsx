@@ -1,18 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
 import { registerSchema, type RegisterType } from "@/validations";
-import { profileServerUrl } from "@/lib";
 import type { Response } from "@/types";
 import { toast } from "@/hooks";
 
 export function RegisterForm() {
-   const router = useRouter();
-
    const registerForm = useForm<RegisterType>({
       resolver: zodResolver(registerSchema),
       defaultValues: { email: "", name: "" },
@@ -29,7 +25,6 @@ export function RegisterForm() {
 
          if (!data.success) return toast({ title: data.message, variant: "destructive" });
          toast({ title: data.message });
-         router.replace(profileServerUrl);
       } catch (error: unknown) {
          let message = "Some error occurred";
          if (error instanceof Error) message = error.message;

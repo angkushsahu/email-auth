@@ -20,10 +20,16 @@ export function useGetUser() {
             if (data?.success) {
                setStatus("success");
                setData(data.user);
-            } else setStatus("error");
+               if (error !== null) setError(null);
+            } else {
+               setStatus("error");
+               setData(null);
+               setError({ message: data.message, name: "Unknown Error" });
+            }
          } catch (error: unknown) {
             setError(error as Error);
             setStatus("error");
+            setData(null);
          }
       }
 
