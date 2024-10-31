@@ -9,7 +9,7 @@ export default async function VerifyPage({ searchParams }: PageProps) {
    if (!searchParams?.token || typeof searchParams.token !== "string") redirect(loginUrl, RedirectType.replace);
    const { token } = searchParams;
 
-   const { user } = await decryptFromCookie("verification", token);
+   const user = await decryptFromCookie("verification", token);
 
    if (!user) redirect(loginUrl, RedirectType.replace);
    else return <Verification token={token} />;

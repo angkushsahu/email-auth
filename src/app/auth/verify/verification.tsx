@@ -4,13 +4,13 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { loginUrl, profileServerUrl } from "@/lib";
-import { loginAction } from "@/actions/auth";
+import { setSessionCookie } from "@/actions";
 
 export function Verification({ token }: { token: string }) {
    const router = useRouter();
 
    useEffect(() => {
-      const callLoginAction = loginAction.bind(null, token);
+      const callLoginAction = setSessionCookie.bind(null, token);
       callLoginAction()
          .then(() => {
             router.replace(profileServerUrl);
@@ -18,6 +18,7 @@ export function Verification({ token }: { token: string }) {
          .catch(() => {
             router.replace(loginUrl);
          });
+      // eslint-disable-next-line
    }, []);
 
    return (

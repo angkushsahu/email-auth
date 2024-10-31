@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { logoutAction } from "@/actions/auth";
+import { deleteSessionCookie } from "@/actions";
 import { Button } from "@/components";
 import { loginUrl } from "@/lib";
 
@@ -10,7 +10,7 @@ export function Logout() {
    const router = useRouter();
 
    async function onLogout() {
-      await logoutAction();
+      await deleteSessionCookie();
       router.replace(loginUrl);
    }
 

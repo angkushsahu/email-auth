@@ -5,10 +5,10 @@ import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
 import { registerSchema, type RegisterType } from "@/validations";
-import type { Response } from "@/types";
+import { updateUser } from "@/actions";
 import { toast } from "@/hooks";
 
-type UpdateFormProps = RegisterType & { _id: string };
+type UpdateFormProps = RegisterType & { id: string };
 
 export function UpdateForm(props: UpdateFormProps) {
    const updateForm = useForm<RegisterType>({
@@ -18,16 +18,11 @@ export function UpdateForm(props: UpdateFormProps) {
 
    async function onUpdate(values: RegisterType) {
       try {
-         const response = await fetch(`/api/user/${props.email}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(values),
-         });
-         const data: Response = await response.json();
+         const callUpdateUser = updateUser.bind(null, { email: values.email, id: props.id, name: values.name });
+         const { message, user } = await callUpdateUser();
 
-         if (!data.success) return toast({ title: data.message, variant: "destructive" });
-
-         toast({ title: data.message });
+         if (!user) toast({ title: message, variant: "destructive" });
+         else toast({ title: message });
       } catch (error: unknown) {
          let message = "Some error occurred";
          if (error instanceof Error) message = error.message;

@@ -8,15 +8,11 @@ export type PageProps = {
    searchParams: Record<string, string | Array<string> | undefined>;
 };
 
-export type GetUserByIdContextType = {
-   params: { email: string };
-};
-
 export type User = {
    name: string;
    email: string;
    createdAt: string;
-   _id: string;
+   id: string;
 };
 
 export type SessionPayload = {
@@ -25,17 +21,3 @@ export type SessionPayload = {
 };
 
 export type JWTContents = JWTPayload & User;
-export type DecryptReturns = { success: true; payload: JWTContents } | { success: false; payload: null };
-export type DecryptFromCookieReturns = { success: true; user: User } | { success: false; user: null };
-
-export type Response =
-   | {
-        success: true;
-        user: User;
-        message: string;
-     }
-   | {
-        success: false;
-        user: null;
-        message: string;
-     };

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
 import { registerSchema, type RegisterType } from "@/validations";
-import type { Response } from "@/types";
+import { createUserAndSendMail } from "@/actions";
 import { toast } from "@/hooks";
 
 export function RegisterForm() {
@@ -16,15 +16,11 @@ export function RegisterForm() {
 
    async function onRegister(values: RegisterType) {
       try {
-         const response = await fetch("/api/user", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(values),
-         });
-         const data: Response = await response.json();
+         const callCreateUser = createUserAndSendMail.bind(null, { email: values.email, name: values.name });
+         const { message, user } = await callCreateUser();
 
-         if (!data.success) return toast({ title: data.message, variant: "destructive" });
-         toast({ title: data.message });
+         if (!user) toast({ title: message, variant: "destructive" });
+         else toast({ title: message });
       } catch (error: unknown) {
          let message = "Some error occurred";
          if (error instanceof Error) message = error.message;

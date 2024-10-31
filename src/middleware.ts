@@ -11,8 +11,8 @@ export default async function middleware(req: NextRequest) {
    const isProtectedRoute = protectedRoutes.includes(path);
    const isPublicRoute = publicRoutes.includes(path);
 
-   const { user } = await decryptFromCookie("session");
-   const { user: userToBeVerified } = await decryptFromCookie("verification");
+   const user = await decryptFromCookie("session");
+   const userToBeVerified = await decryptFromCookie("verification");
 
    // Setting this ensures that the api call in the `check-mail` page is omitted, hence, the same api is not called twice
    const updatedCheckMailUrl = `${route.checkMailUrl}?verification_token=true`;

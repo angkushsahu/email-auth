@@ -9,7 +9,7 @@ export function UserDetails() {
 
    return (
       <div>
-         <p>{data?._id}</p>
+         <p>{data?.id}</p>
          <p>{data?.name}</p>
          <p>{data?.email}</p>
          <p>{data?.createdAt}</p>

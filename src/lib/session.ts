@@ -3,7 +3,7 @@ import "server-only";
 import { jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 
-import type { DecryptFromCookieReturns, DecryptReturns, JWTContents, SessionPayload } from "@/types";
+import type { JWTContents, SessionPayload, User } from "@/types";
 
 function getSecret() {
    if (!process.env.JWT_SECRET) throw new Error("Please specify environment variable 'JWT_SECRET'");
@@ -21,34 +21,34 @@ export async function encrypt({ expiresAt, payload }: SessionPayload) {
    );
 }
 
-export async function decrypt(session: string | undefined = ""): Promise<DecryptReturns> {
-   if (!session) return { payload: null, success: false };
+export async function decrypt(session: string | undefined = ""): Promise<JWTContents | null> {
+   if (!session) return null;
    try {
       const { payload }: { payload: JWTContents | null } = await jwtVerify(session, getSecret(), { algorithms: ["HS256"] });
-      return { payload, success: true };
+      return payload;
    } catch {
-      return { payload: null, success: false };
+      return null;
    }
 }
 
 export async function decryptFromCookie(
    cookieName: "session" | "verification",
    token: string | null = null
-): Promise<DecryptFromCookieReturns> {
+): Promise<User | null> {
    try {
       const session = token ?? cookies().get(cookieName)?.value;
-      const { payload, success } = await decrypt(session);
-      if (!success) return { user: null, success: false };
+      const payload = await decrypt(session);
+      if (!payload) return null;
 
       const user = {
-         _id: payload._id,
+         id: payload.id,
          name: payload.name,
          email: payload.email,
          createdAt: payload.createdAt,
       };
 
-      return { user, success: true };
+      return user;
    } catch {
-      return { user: null, success: false };
+      return null;
    }
 }

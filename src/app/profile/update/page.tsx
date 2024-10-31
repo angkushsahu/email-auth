@@ -6,8 +6,8 @@ import { decryptFromCookie } from "@/lib/session";
 import { UpdateForm } from "./form";
 
 export default async function UpdatePage() {
-   const { success, user } = await decryptFromCookie("session");
-   if (!success) redirect(loginUrl, RedirectType.replace);
+   const user = await decryptFromCookie("session");
+   if (!user) redirect(loginUrl, RedirectType.replace);
 
    return (
       <section className="flex grow flex-col items-center justify-center">

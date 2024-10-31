@@ -6,14 +6,10 @@ import type { PageProps } from "@/types";
 import { loginUrl } from "@/lib";
 
 export default async function CheckMailPage({ searchParams }: PageProps) {
-   let checkVerificationCookie = searchParams?.verification_token === "true";
+   const checkVerificationCookie = searchParams?.verification_token === "true";
    let verifiedUser = null;
 
-   if (checkVerificationCookie) {
-      const { user } = await decryptFromCookie("verification");
-      verifiedUser = user;
-   }
-
+   if (checkVerificationCookie) verifiedUser = await decryptFromCookie("verification");
    if (!verifiedUser) redirect(loginUrl, RedirectType.replace);
 
    return (

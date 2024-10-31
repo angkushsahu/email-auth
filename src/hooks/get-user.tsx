@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import type { Response, User } from "@/types";
+import { getUserFromSession } from "@/actions";
+import type { User } from "@/types";
 
 export function useGetUser() {
    const [status, setStatus] = useState<"loading" | "error" | "success">("loading");
@@ -14,17 +15,16 @@ export function useGetUser() {
          try {
             if (status !== "loading") setStatus("loading");
 
-            const response = await fetch("/api/user");
-            const data: Response = await response.json();
+            const user = await getUserFromSession();
 
-            if (data?.success) {
+            if (user) {
                setStatus("success");
-               setData(data.user);
+               setData(user);
                if (error !== null) setError(null);
             } else {
+               setError({ message: "Unknown Error", name: "Unknown Error" });
                setStatus("error");
                setData(null);
-               setError({ message: data.message, name: "Unknown Error" });
             }
          } catch (error: unknown) {
             setError(error as Error);
@@ -34,6 +34,7 @@ export function useGetUser() {
       }
 
       getUser().then();
+      // eslint-disable-next-line
    }, []);
 
    return { data, error, status };

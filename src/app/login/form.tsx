@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
 import { loginSchema, type LoginType } from "@/validations";
-import type { Response } from "@/types";
+import { checkUserAndSendMail } from "@/actions";
 import { toast } from "@/hooks";
 
 export function LoginForm() {
@@ -16,12 +16,11 @@ export function LoginForm() {
 
    async function onLogin(values: LoginType) {
       try {
-         const response = await fetch("/api/user/login", { method: "POST", body: JSON.stringify(values) });
-         const data: Response = await response.json();
+         const callCheckUserAndSendMail = checkUserAndSendMail.bind(null, values.email);
+         const { message, user } = await callCheckUserAndSendMail();
 
-         if (!data.success) return toast({ title: data.message, variant: "destructive" });
-
-         toast({ title: data.message });
+         if (!user) toast({ title: message, variant: "destructive" });
+         else toast({ title: message });
       } catch (error: unknown) {
          let message = "Some error occurred";
          if (error instanceof Error) message = error.message;
