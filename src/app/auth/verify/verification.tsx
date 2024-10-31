@@ -10,14 +10,15 @@ export function Verification({ token }: { token: string }) {
    const router = useRouter();
 
    useEffect(() => {
-      const callLoginAction = setSessionCookie.bind(null, token);
-      callLoginAction()
-         .then(() => {
-            router.replace(profileServerUrl);
-         })
-         .catch(() => {
-            router.replace(loginUrl);
-         });
+      async function loginToApplication() {
+         const callLoginAction = setSessionCookie.bind(null, token);
+         const response = await callLoginAction();
+
+         if (response) router.replace(profileServerUrl);
+         else router.replace(loginUrl);
+      }
+
+      loginToApplication();
       // eslint-disable-next-line
    }, []);
 

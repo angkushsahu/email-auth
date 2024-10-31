@@ -35,8 +35,8 @@ export async function updateUser({ email, id, name }: UpdateUserArgs) {
 
       // Generate token and set as cookie
       const expiryDate = setLoginCookieExpiry();
-      const token = await encrypt({ payload: userObject, expiresAt: expiryDate });
-      cookies().set("session", token, { expires: expiryDate });
+      const token = await encrypt({ payload: userObject, expiresAt: expiryDate.stringFormat });
+      cookies().set("session", token, { expires: expiryDate.dateFormat });
 
       return { message: "User updated successfully", user: userObject };
    } catch (error: unknown) {

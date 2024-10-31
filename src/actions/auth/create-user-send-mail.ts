@@ -34,14 +34,14 @@ export async function createUserAndSendMail({ email, name }: CreateUserArgs) {
 
       // Generate token
       const expiryDate = setVerifyCookieExpiry();
-      const token = await encrypt({ payload: userObject, expiresAt: expiryDate });
+      const token = await encrypt({ payload: userObject, expiresAt: expiryDate.stringFormat });
 
       // Send authentication mail
       const isMailSent = await sendMail({ callbackUrl: "", email: user.email, fullName: user.name, token });
       if (!isMailSent) return { message: "Unable to send email", user: null };
 
       // Set verification email
-      cookies().set("verification", token, { expires: expiryDate });
+      cookies().set("verification", token, { expires: expiryDate.dateFormat });
       return { message: "Check your email to login", user: userObject };
    } catch (error: unknown) {
       let message = "Internal Server Error";

@@ -15,9 +15,11 @@ export type User = {
    id: string;
 };
 
+export type ExpiryPeriod = "7 days" | "15 minutes";
+
 export type SessionPayload = {
    payload: Readonly<Record<string, unknown>>;
-   expiresAt: Date;
+   expiresAt: ExpiryPeriod;
 };
 
 export type JWTContents = JWTPayload & User;
