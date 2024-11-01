@@ -13,7 +13,7 @@ export async function setSessionCookie(token: string) {
    const expiryDate = setLoginCookieExpiry();
    const webCookies = cookies();
 
-   const user = await decryptFromCookie("verification");
+   const user = await decryptFromCookie("verification", token);
    if (!user) return false;
 
    const newToken = await encrypt({ expiresAt: expiryDate.stringFormat, payload: user });
