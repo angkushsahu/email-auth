@@ -41,7 +41,7 @@ export async function createUserAndSendMail({ email, name }: CreateUserArgs) {
       if (!isMailSent) return { message: "Unable to send email", user: null };
 
       // Set verification email
-      cookies().set("verification", token, { expires: expiryDate.dateFormat });
+      cookies().set("verification", token, { expires: expiryDate.dateFormat, httpOnly: true, secure: true, sameSite: true });
       return { message: "Check your email to login", user: userObject };
    } catch (error: unknown) {
       let message = "Internal Server Error";

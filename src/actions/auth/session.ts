@@ -17,7 +17,7 @@ export async function setSessionCookie(token: string) {
    if (!user) return false;
 
    const newToken = await encrypt({ expiresAt: expiryDate.stringFormat, payload: user });
-   webCookies.set("session", newToken, { expires: expiryDate.dateFormat });
+   webCookies.set("session", newToken, { expires: expiryDate.dateFormat, httpOnly: true, secure: true, sameSite: true });
    if (webCookies.has("verification")) webCookies.delete("verification");
 
    return true;
