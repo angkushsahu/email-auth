@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetUser } from "@/hooks";
+import { useGetUser } from "@/features/auth";
 
 export function UserDetails() {
    const { status, data } = useGetUser();

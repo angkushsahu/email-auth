@@ -2,28 +2,24 @@
 
 import { cookies } from "next/headers";
 
-import { setVerifyCookieExpiry } from "@/lib/set-cookie-expire";
+import { setVerifyCookieExpiry } from "@/features/auth/lib/set-cookie-expire";
+import { sendMail } from "@/features/auth/lib/send-mail";
+import { encrypt } from "@/features/auth/lib/session";
 import { connectDatabase, userModel } from "@/db";
-import { sendMail } from "@/lib/send-mail";
-import { encrypt } from "@/lib/session";
 
-type CreateUserArgs = {
+type CheckUserAndSendMailArgs = {
    email: string;
-   name: string;
+   callbackUrl: string;
 };
 
-export async function createUserAndSendMail({ email, name }: CreateUserArgs) {
+export async function checkUserAndSendMail({ callbackUrl, email }: CheckUserAndSendMailArgs) {
    try {
       // Connect to database
       await connectDatabase();
 
-      // Throw error if email already exists
-      const userAlreadyExists = await userModel.findOne({ email });
-      if (userAlreadyExists) return { message: "Email already registered, login instead", user: null };
-
-      // Create user
-      const user = await userModel.create({ name, email });
-      if (!user) return { message: "Unable to create user", user: null };
+      // Find user
+      const user = await userModel.findOne({ email });
+      if (!user) return { message: "User not found", user: null };
 
       const userObject = {
          id: user.id,
@@ -37,7 +33,7 @@ export async function createUserAndSendMail({ email, name }: CreateUserArgs) {
       const token = await encrypt({ payload: userObject, expiresAt: expiryDate.stringFormat });
 
       // Send authentication mail
-      const isMailSent = await sendMail({ callbackUrl: "", email: user.email, fullName: user.name, token });
+      const isMailSent = await sendMail({ callbackUrl, email: user.email, fullName: user.name, token });
       if (!isMailSent) return { message: "Unable to send email", user: null };
 
       // Set verification email

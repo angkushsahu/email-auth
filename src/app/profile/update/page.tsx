@@ -2,7 +2,7 @@ import { redirect, RedirectType } from "next/navigation";
 import Link from "next/link";
 
 import { loginUrl, profileClientUrl, profileServerUrl } from "@/lib";
-import { decryptFromCookie } from "@/lib/session";
+import { decryptFromCookie } from "@/features/auth/lib/session";
 import { UpdateForm } from "./form";
 
 export default async function UpdatePage() {

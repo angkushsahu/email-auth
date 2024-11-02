@@ -1,7 +1,7 @@
 import { redirect, RedirectType } from "next/navigation";
 import { Mail } from "lucide-react";
 
-import { decryptFromCookie } from "@/lib/session";
+import { decryptFromCookie } from "@/features/auth/lib/session";
 import type { PageProps } from "@/types";
 import { loginUrl } from "@/lib";
 

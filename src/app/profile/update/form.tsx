@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
-import { registerSchema, type RegisterType } from "@/validations";
-import { updateUser } from "@/actions";
+import { registerSchema, type RegisterType, updateUser } from "@/features/auth";
 import { toast } from "@/hooks";
 
 type UpdateFormProps = RegisterType & { id: string };

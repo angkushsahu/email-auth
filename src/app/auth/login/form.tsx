@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
-import { loginSchema, type LoginType } from "@/validations";
-import { checkUserAndSendMail } from "@/actions";
+import { checkUserAndSendMail, loginSchema, type LoginType } from "@/features/auth";
 import { toast } from "@/hooks";
 
 export function LoginForm({ callbackUrl }: { callbackUrl: string }) {

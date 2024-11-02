@@ -1,6 +1,6 @@
 import { redirect, RedirectType } from "next/navigation";
 
-import { decryptFromCookie } from "@/lib/session";
+import { decryptFromCookie } from "@/features/auth/lib/session";
 import { Verification } from "./verification";
 import type { PageProps } from "@/types";
 import { loginUrl } from "@/lib";

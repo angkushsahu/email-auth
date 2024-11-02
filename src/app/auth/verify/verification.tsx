@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+import { setSessionCookie } from "@/features/auth";
 import { loginUrl, profileServerUrl } from "@/lib";
-import { setSessionCookie } from "@/actions";
 
 type VerificationProps = {
    token: string;

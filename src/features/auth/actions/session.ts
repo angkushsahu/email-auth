@@ -2,8 +2,8 @@
 
 import { cookies } from "next/headers";
 
-import { setLoginCookieExpiry } from "@/lib/set-cookie-expire";
-import { decryptFromCookie, encrypt } from "@/lib/session";
+import { setLoginCookieExpiry } from "@/features/auth/lib/set-cookie-expire";
+import { decryptFromCookie, encrypt } from "@/features/auth/lib/session";
 
 export async function getUserFromSession() {
    return await decryptFromCookie("session");

@@ -2,9 +2,9 @@
 
 import { cookies } from "next/headers";
 
-import { setLoginCookieExpiry } from "@/lib/set-cookie-expire";
+import { setLoginCookieExpiry } from "@/features/auth/lib/set-cookie-expire";
+import { encrypt } from "@/features/auth/lib/session";
 import { connectDatabase, userModel } from "@/db";
-import { encrypt } from "@/lib/session";
 
 type UpdateUserArgs = {
    name: string;

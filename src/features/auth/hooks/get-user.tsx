@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { getUserFromSession } from "@/actions";
+import { getUserFromSession } from "@/features/auth";
 import type { User } from "@/types";
 
 export function useGetUser() {

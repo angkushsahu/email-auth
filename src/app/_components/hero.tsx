@@ -3,7 +3,7 @@
 import Link from "next/link";
 
 import { loginUrl, profileClientUrl, profileServerUrl, protectedUrl, publicUrl, registerUrl } from "@/lib";
-import { useGetUser } from "@/hooks";
+import { useGetUser } from "@/features/auth";
 
 export function Hero() {
    const { status } = useGetUser();

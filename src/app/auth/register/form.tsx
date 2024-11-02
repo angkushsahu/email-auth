@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, FormMessage, Input } from "@/components";
-import { registerSchema, type RegisterType } from "@/validations";
-import { createUserAndSendMail } from "@/actions";
+import { createUserAndSendMail, registerSchema, type RegisterType } from "@/features/auth";
 import { toast } from "@/hooks";
 
 export function RegisterForm() {

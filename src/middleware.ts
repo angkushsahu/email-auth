@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { decryptFromCookie } from "./lib/session";
+import { decryptFromCookie } from "@/features/auth/lib/session";
 import * as route from "./lib/constants";
 
 const protectedRoutes = [route.protectedUrl, route.profileClientUrl, route.profileServerUrl, route.profileUpdateUrl];

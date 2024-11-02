@@ -1,8 +1,8 @@
 import { redirect, RedirectType } from "next/navigation";
 import Link from "next/link";
 
+import { decryptFromCookie } from "@/features/auth/lib/session";
 import { loginUrl, profileUpdateUrl } from "@/lib";
-import { decryptFromCookie } from "@/lib/session";
 import { UserDetails } from "./user-details";
 import { Logout } from "./logout";
 

@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 
-import { deleteSessionCookie } from "@/actions";
+import { deleteSessionCookie } from "@/features/auth";
 import { Button } from "@/components";
 import { loginUrl } from "@/lib";
 
