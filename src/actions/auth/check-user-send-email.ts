@@ -7,7 +7,12 @@ import { connectDatabase, userModel } from "@/db";
 import { sendMail } from "@/lib/send-mail";
 import { encrypt } from "@/lib/session";
 
-export async function checkUserAndSendMail(email: string) {
+type CheckUserAndSendMailArgs = {
+   email: string;
+   callbackUrl: string;
+};
+
+export async function checkUserAndSendMail({ callbackUrl, email }: CheckUserAndSendMailArgs) {
    try {
       // Connect to database
       await connectDatabase();
@@ -28,7 +33,7 @@ export async function checkUserAndSendMail(email: string) {
       const token = await encrypt({ payload: userObject, expiresAt: expiryDate.stringFormat });
 
       // Send authentication mail
-      const isMailSent = await sendMail({ callbackUrl: "", email: user.email, fullName: user.name, token });
+      const isMailSent = await sendMail({ callbackUrl, email: user.email, fullName: user.name, token });
       if (!isMailSent) return { message: "Unable to send email", user: null };
 
       // Set verification email

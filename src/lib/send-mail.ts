@@ -4,7 +4,7 @@ import type Mail from "nodemailer/lib/mailer";
 import { createTransport } from "nodemailer";
 
 type SendMailArgs = {
-   callbackUrl: string | null;
+   callbackUrl: string;
    email: string;
    fullName: string;
    token: string;
@@ -20,7 +20,7 @@ export async function sendMail({ callbackUrl, email, fullName, token }: SendMail
    else if (process.env.VERCEL_URL) baseUrl = `https://${process.env.VERCEL_URL}`;
    else baseUrl = `http://localhost:${process.env.PORT ?? 3000}`;
 
-   const link = `${baseUrl}/auth/verify?token=${token}` + (callbackUrl?.length ? `&callback_url=${callbackUrl}` : "");
+   const link = `${baseUrl}/auth/verify?token=${token}` + (callbackUrl.length ? `&callback_url=${callbackUrl}` : "");
    const applicationName = "E-mail authentication";
 
    const transporter = createTransport({

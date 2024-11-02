@@ -22,13 +22,22 @@ export default async function middleware(req: NextRequest) {
       // if applied for mail-verification, redirect to `check-mail` page
       if (userToBeVerified) return NextResponse.redirect(new URL(updatedCheckMailUrl, req.nextUrl));
       // if NOT applied for mail-verification, then redirect to login
-      return NextResponse.redirect(new URL(route.loginUrl, req.nextUrl));
+      let callbackUrl = "";
+      const checkCallbackUrlValidity = [route.registerUrl, route.loginUrl, route.checkMailUrl, route.verifyMailUrl].includes(
+         path
+      );
+
+      if (checkCallbackUrlValidity) callbackUrl = route.loginUrl;
+      else callbackUrl = `${route.loginUrl}?callback_url=${path}`;
+
+      return NextResponse.redirect(new URL(callbackUrl, req.nextUrl));
    }
    // if user is NOT logged in, and he is still to be verified
    else if (isPublicRoute && !user && userToBeVerified) {
       return NextResponse.redirect(new URL(updatedCheckMailUrl, req.nextUrl));
    }
    // if user is logged in, don't show him `auth` pages
+   // ATTENTION: If we need to implement authorization, we can add security checks for that in this `else-if` statement
    else if (isPublicRoute && user) {
       return NextResponse.redirect(new URL(route.profileServerUrl, req.nextUrl));
    }

@@ -6,7 +6,12 @@ import { useEffect } from "react";
 import { loginUrl, profileServerUrl } from "@/lib";
 import { setSessionCookie } from "@/actions";
 
-export function Verification({ token }: { token: string }) {
+type VerificationProps = {
+   token: string;
+   callbackUrl: string;
+};
+
+export function Verification({ callbackUrl, token }: VerificationProps) {
    const router = useRouter();
 
    useEffect(() => {
@@ -14,8 +19,16 @@ export function Verification({ token }: { token: string }) {
          const callLoginAction = setSessionCookie.bind(null, token);
          const response = await callLoginAction();
 
-         if (response) router.replace(profileServerUrl);
-         else router.replace(loginUrl);
+         let authUrl = "";
+         let nonAuthUrl = "";
+
+         if (callbackUrl.length) {
+            authUrl = callbackUrl;
+            nonAuthUrl = `&callback_url=${callbackUrl}`;
+         } else authUrl = profileServerUrl;
+
+         if (response) router.replace(authUrl);
+         else router.replace(loginUrl + nonAuthUrl);
       }
 
       loginToApplication();

@@ -8,7 +8,7 @@ import { loginSchema, type LoginType } from "@/validations";
 import { checkUserAndSendMail } from "@/actions";
 import { toast } from "@/hooks";
 
-export function LoginForm() {
+export function LoginForm({ callbackUrl }: { callbackUrl: string }) {
    const loginForm = useForm<LoginType>({
       resolver: zodResolver(loginSchema),
       defaultValues: { email: "" },
@@ -16,7 +16,7 @@ export function LoginForm() {
 
    async function onLogin(values: LoginType) {
       try {
-         const callCheckUserAndSendMail = checkUserAndSendMail.bind(null, values.email);
+         const callCheckUserAndSendMail = checkUserAndSendMail.bind(null, { email: values.email, callbackUrl });
          const { message, user } = await callCheckUserAndSendMail();
 
          if (!user) toast({ title: message, variant: "destructive" });
